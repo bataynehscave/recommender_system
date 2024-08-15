@@ -27,6 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+DATA_DIR = BASE_DIR / "data"
 
 # Application definition
 
@@ -42,6 +43,7 @@ INSTALLED_APPS = [
     # internal app
     'profiles',
     'movies',
+    'ratings'
 ]
 
 MIDDLEWARE = [

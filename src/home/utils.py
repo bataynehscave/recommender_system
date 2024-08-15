@@ -1,4 +1,45 @@
 from faker import Faker
+import csv 
+from django.conf import settings
+from pprint import pprint
+import datetime
+
+MOVIE_METADATA_CSV = settings.DATA_DIR / 'movies_metadata.csv'
+
+def validate_date(date: str) -> str:
+    try:
+        datetime.datetime.strptime(date)
+        return date
+    except:
+        return None
+
+def get_movies_metadata(limit = 1):
+    with open(MOVIE_METADATA_CSV, newline='') as f:
+        data = csv.DictReader(f)
+        movies = []
+        for i, row in enumerate(data):
+            _id = row.get('id')
+            try:
+                _id = int(_id)
+            except:
+                _id = None
+            release_date = validate_date(row.get('release_date'))
+            movie_data = {
+                'id': _id,
+                'title': row.get('title'),
+                'overview': row.get('overview'),
+                'release_date': release_date
+            }
+            movies.append(movie_data)
+            if i + 1 >= limit:
+                break
+        print(f'added {len(movies)}')
+        return movies
+            
+    
+
+
+
 
 def get_fake_profile(count = 10):
     fake = Faker()
