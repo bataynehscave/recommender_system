@@ -29,7 +29,7 @@ class Movie(models.Model):
         if not self.rating_last_updated:
             return self.calculate_rating()
         
-        if self.rating_last_updated > now - timedelta(minutes=1):
+        if self.rating_last_updated > now - timedelta(minutes=5):
             return self.rating_avg
         
         return self.calculate_rating()

@@ -50,8 +50,10 @@ def rating_post_save(sender, instance, created, *args, **kwargs):
         if instance.active:
             qs = Rating.objects.filter(content_type=instance.content_type,
                                        object_id=instance.object_id,
-                                       user=instance.user).exclude(id=_id, active=False)
-            qs.update(active=False)
+                                       user=instance.user,
+                                       active=True).exclude(id=_id)
+            if qs.exists():
+                qs.update(active=False)
 
 post_save.connect(rating_post_save, sender=Rating)
 

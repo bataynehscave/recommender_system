@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,10 +21,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-1wghi$sg4y+zjc6n$2^=hr(^2fq-m!r1%z11cvq=(mrkphq&13'
+SECRET_KEY = config('SECRET_KEY', default = None)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DJANGO_DEBUG', default = 0, cast=bool)
 
 ALLOWED_HOSTS = []
 
@@ -39,6 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    #external apps
+    'django_celery_beat', #scheduler
+    'django_celery_results', #saves our task result
 
     # internal app
     'profiles',
@@ -57,6 +61,10 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'home.urls'
+
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers.DatabaseScheduler'
+CELERY_BROKER_URL = config('CELERY_BROKER_REDIS_URL' , default = 'redis://localhost:6379')
+CELERY_RESULT_BACKEND = 'django-db'
 
 TEMPLATES = [
     {

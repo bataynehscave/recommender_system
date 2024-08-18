@@ -1,9 +1,12 @@
 import random 
 from movies.models import Movie
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
 
 from .models import Rating, RatingChoice
+from celery import shared_task
 
+@shared_task(name='generate_fake_reviews')
 def generate_fake_reviews(count = 100, users=10, zero_avg=False):
     user_s = User.objects.first()
     user_e = User.objects.last()
@@ -12,6 +15,7 @@ def generate_fake_reviews(count = 100, users=10, zero_avg=False):
     users = User.objects.filter(id__in=random_user_ids)
     
     movies = Movie.objects.all().order_by('?')[:count]
+    
     if zero_avg:
         movies = Movie.objects.filter(rating_avg=0).order_by('?')[:count]
     
