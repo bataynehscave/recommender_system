@@ -1,0 +1,23 @@
+<form action="" hx-post="rate/movie/" hx-trigger="change" hx-target="find .success" >
+    <div class="success"></div>
+    {% if object_id %}
+    <input type="hidden" value="{{object_id}}" name="object_id">
+    {%endif%}
+<select name="rating" class="form-control" >
+    {% for choice in rating_choices %}
+    {% if choice is None %}
+    <option  disabled selected >pick a choice</option>
+    {% else %}
+    {% if current_rating == choice %}
+    <option value="{{choice}}"  selected  >{{choice}}</option>
+    {% else %}
+    <option value="{{choice}}"   >{{choice}} </option>
+    
+        {%endif%}
+    {%endif%}
+    {% endfor %}
+    
+</select>
+
+</form>
+&#9733;

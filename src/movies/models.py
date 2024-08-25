@@ -15,6 +15,9 @@ class Movie(models.Model):
     rating_count = models.IntegerField(blank=True, null=True)
     rating_avg = models.DecimalField(decimal_places=2, max_digits=5, blank=True, default=0.00)
 
+    def get_absolute_url(self):
+        return f'{self.id}'
+
     def calculate_ratings_count(self):
         
         return self.ratings.filter(active=True).count()

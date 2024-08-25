@@ -4,6 +4,7 @@ from django.db.models import Avg
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db.models.signals import post_save
+from django import apps
 # Create your models here.
 
 class RatingChoice(models.IntegerChoices):
@@ -17,11 +18,19 @@ class RatingChoice(models.IntegerChoices):
 class RatingQuerySet(models.QuerySet):
     def avg(self):
         return self.aggregate(average=Avg('value'))['average']
+    
+    def movies(self):
+        Movie = apps.get_model('movies', 'Movie')
+        ctype = ContentType.objects.get_for_model(Movie)
+        return self.filter(active=True, ContentType=ctype)
                               
 class RatingManager(models.Manager):
     def get_queryset(self):
         return RatingQuerySet(self.model, using=self._db)
 
+    def movies(self):
+        return self.get_queryset().movies()
+    
     def avg(self):
         return self.get_queryset().avg()
 
