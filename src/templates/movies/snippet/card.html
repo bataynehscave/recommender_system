@@ -3,13 +3,18 @@
 {% with my_ratings|get_dict_val:object.id as current_rating %}
 <div class="card">
     <div class="card shadow-sm">
-            {{current_rating}}
+        {{current_rating}}
         <div class="card-body">
+            <a href="/{{object.id}}" style="text-decoration: None; ">
             <h3>{{object.title}} <small>{{object.id}}</small> </h3>
+        </a>
             <p class="card-text">{{object.overview}}</p>
             <div class="d-flex justify-content-between align-items-center">
 
                 <div class="btn-group">
+                    {% if skip is True %}
+                    <button class="btn btn-secondary" hx-post="/rate/movie/" >Next</button>
+                    {%endif%}
                     {% include 'ratings/snippet/rating-choices.html' with object=object current_rating=current_rating object_id=object.id %}
                 </div>
 
