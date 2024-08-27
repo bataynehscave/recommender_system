@@ -5,3 +5,5 @@ django-celery-results
 Faker
 python-decouple
 redis
+django-allauth
+django-htmx
