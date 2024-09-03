@@ -7,7 +7,7 @@ def export_file_handler(instance, filename):
     today = timezone.now().strftime('%Y-%m-%d')
     fpath = pathlib.Path(filename)
     ext = fpath.suffix
-    if hasattr(instance, id):
+    if hasattr(instance, 'id'):
         new_fname = f"{instance.id}{ext}"
     else:
 

@@ -5,6 +5,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db.models.signals import post_save
 from django import apps
+from django.utils import timezone
 # Create your models here.
 
 class RatingChoice(models.IntegerChoices):
@@ -55,6 +56,8 @@ class Rating(models.Model):
 
 def rating_post_save(sender, instance, created, *args, **kwargs):
     if created:
+        Suggestion = apps.get_model('suggestions','Suggestion')
+
         _id = instance.id
         if instance.active:
             qs = Rating.objects.filter(content_type=instance.content_type,
@@ -63,6 +66,17 @@ def rating_post_save(sender, instance, created, *args, **kwargs):
                                        active=True).exclude(id=_id)
             if qs.exists():
                 qs.update(active=False)
+
+            suggestion_qs = Suggestion.objects.filter(content_type=instance.content_type,
+                                       object_id=instance.object_id,
+                                       user=instance.user,
+                                       did_rate=False).exclude(id=_id)
+            if suggestion_qs.exists():
+                suggestion_qs.update(
+                    did_rate-True,
+                    did_rate_timestamp=timezone.now(),
+                    rating_value = instance.value
+                )
 
 post_save.connect(rating_post_save, sender=Rating)
 

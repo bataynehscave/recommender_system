@@ -7,6 +7,7 @@ from django.utils import timezone
 from .models import Rating, RatingChoice
 from celery import shared_task
 from django.db.models import Avg, Count
+import decimal
 
 @shared_task(name='generate_fake_reviews')
 def generate_fake_reviews(count = 100, users=10, zero_avg=False):
@@ -44,5 +45,6 @@ def task_update_movie_ratings():
         qs.update(
             rating_avg = agg_rate['average'],
             rating_count = agg_rate['count'],
+            score = agg_rate['average'] * agg_rate['count'],
             rating_last_updated = timezone.now(),
         )

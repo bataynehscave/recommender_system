@@ -2,12 +2,13 @@ from typing import Any
 from django.shortcuts import render
 from django.views import generic
 # Create your views here.
-from.models import Movie
+from .models import Movie
 
 class MovieListView(generic.ListView):
     template_name = 'movies/list.html'
     paginate_by = 100
-    queryset = Movie.objects.all().order_by('-rating_avg')
+    queryset = Movie.objects.all().order_by('-score')
+    # qs = queryset.popular()
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
@@ -41,10 +42,11 @@ class MovieDetailView(generic.DetailView):
 
 movie_detail_view = MovieDetailView.as_view()
 
-
+import random
 class MovieInfiniteRatingView(MovieDetailView):
     def get_object(self):
-        return Movie.objects.all().order_by('?').first()
+        qs =  Movie.objects.all().order_by('-score')
+        return random.choice(qs[:100])
     
     def get_template_names(self):
         request = self.request

@@ -13,7 +13,7 @@ def validate_date(date: str) -> str:
     except:
         return None
 
-def get_movies_metadata(limit = 1):
+def get_movies_metadata(limit = 10000):
     with open(MOVIE_METADATA_CSV, newline='') as f:
         data = csv.DictReader(f)
         movies = []
