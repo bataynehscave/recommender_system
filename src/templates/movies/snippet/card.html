@@ -13,7 +13,7 @@
 
                 <div class="btn-group">
                     {% if skip is True %}
-                    <button class="btn btn-secondary" hx-post="/rate/movie/" >Next</button>
+                    <button class="btn btn-secondary" hx-post="{% url 'rate' %}" >Next</button>
                     {%endif%}
                     {% include 'ratings/snippet/rating-choices.html' with object=object current_rating=current_rating object_id=object.id %}
                 </div>

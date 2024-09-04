@@ -4,7 +4,7 @@ from django.db.models import Avg
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db.models.signals import post_save
-from django import apps
+from django.apps.registry import apps
 from django.utils import timezone
 # Create your models here.
 
@@ -73,9 +73,9 @@ def rating_post_save(sender, instance, created, *args, **kwargs):
                                        did_rate=False).exclude(id=_id)
             if suggestion_qs.exists():
                 suggestion_qs.update(
-                    did_rate-True,
+                    did_rate = True,
                     did_rate_timestamp=timezone.now(),
-                    rating_value = instance.value
+                    value = instance.value
                 )
 
 post_save.connect(rating_post_save, sender=Rating)

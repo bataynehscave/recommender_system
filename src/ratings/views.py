@@ -12,9 +12,9 @@ def rate_movie_view(request):
     if not request.htmx:
         return HttpResponse("not Allowed", status=400)
     object_id = request.POST.get('object_id')
-    rating_value = request.POST.get('rating_value')
+    rating_value = request.POST.get('rating')
     if object_id is None or rating_value is None:
-        response =  HttpResponse('nothing here', status=200)
+        response =  HttpResponse(f'nothing here {object_id=}  {rating_value=} ', status=200)
         response['HX-Trigger'] = 'did-skip-movie'
         return response
     user = request.user
@@ -25,6 +25,8 @@ def rate_movie_view(request):
         rating_obj = Rating.objects.create(content_type=ctype, object_id=object_id, value=rating_value, user=user)
         if rating_obj.content_object is not None:
             message='rating updated'
+            response =  HttpResponse(f'rated', status=200)
+           
             response['HX-Trigger-After-Settle'] = 'did-rate-movie'
             return response
         pass

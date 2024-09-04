@@ -1,4 +1,4 @@
-<form action="" hx-post="rate/movie/" hx-trigger="change" hx-target="find .success" >
+<form action="" hx-post="{% url 'rate' %}" hx-trigger="change" hx-target="find .success" >
     <div class="success"></div>
     {% if object_id %}
     <input type="hidden" value="{{object_id}}" name="object_id">

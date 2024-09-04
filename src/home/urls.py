@@ -17,9 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from ratings import views as rating_views
+from dashboard import views as dshb_views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('movies.urls')),
     path('accounts/', include('allauth.urls')),
-    path('rate/movie/', rating_views.rate_movie_view)
+    path('rate/movie/', rating_views.rate_movie_view, name='rate'),
+    path('suggestions/', dshb_views.home_view, name='suggestions'),
 ]

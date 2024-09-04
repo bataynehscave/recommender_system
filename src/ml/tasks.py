@@ -18,11 +18,16 @@ def batch_user_prediction_task(user_ids=None, start_page = 0, offset=250, max_pa
         recent_users_ids = prof_utils.get_recent_users()
     movie_ids = Movie.objects.all().values_list('id', flat=True)[start_page:end_page]
     Suggestion = apps.get_model('suggestions', 'Suggestion')
+    recently_suggested = Suggestion.objects.get_recently_suggested(movie_ids, recent_users_ids)
     ctype = ContentType.objects.get(app_label='movies', model='movie')
     new_suggestions = []
     if model is not None:
         for u in recent_users_ids:
             for movie_id in movie_ids:
+                users_done = recently_suggested.get(f"{movie_id}") or []
+                if u in users_done:
+                    print(movie_id, 'is done for ', u, 'user')
+                    break
                 pred = model.predict(uid=u, iid=movie_id).est
                 # print(u, movie_id, pred)
                 data = {

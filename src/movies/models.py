@@ -2,16 +2,22 @@ from datetime import timedelta
 from django.db import models
 from django.contrib.contenttypes.fields import GenericRelation
 from django.utils import timezone
-from django.db.models import F, Sum
+from django.db.models import F, Sum, Case, When
 from ratings.models import Rating
 
-class MovieQuerySet(models.QuerySet):
+class MovieManager(models.Manager):
     def popular(self):
         return self.annotate(score = Sum(
          F('rating_avg') * F('rating_count'),
          output_field = models.FloatField()   
         )
         ).order_by('-score')
+    
+    def by_id_order(self, movie_pks=[]):
+        qs = self.get_queryset().filter(id__in=movie_pks)
+        maintain_order = Case(*[When(pk=pki, then=idx) for idx, pki in enumerate(movie_pks)])
+
+        return qs.order_by(maintain_order)
 
 class Movie(models.Model):
     title = models.CharField(max_length=120, unique=True)
@@ -23,7 +29,7 @@ class Movie(models.Model):
     rating_count = models.IntegerField(blank=True, null=True)
     rating_avg = models.DecimalField(decimal_places=2, max_digits=5, blank=True, default=0.00)
     score = models.FloatField( null=True)
-
+    objects = MovieManager()
     def get_absolute_url(self):
         return f'{self.id}'
 
